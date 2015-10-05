@@ -31,9 +31,12 @@
                           ])])
 
 (defn card [item]
-  [:div.media
-   [:div.media-left
-    [:img.media-object {:src (-> item :images first :url)
-                        :width 64
-                        :height 64}]]
-   [:div.media-body [:p.media-heading (:name item)]]])
+  (let [img-url (if (seq (:images item))
+              (-> item :images first :url)
+              "http://icons.iconarchive.com/icons/artcore-illustrations/artcore-4/512/spotify-icon.png")]
+    [:div.media
+     [:div.media-left
+      [:img.media-object {:src img-url
+                          :width 64
+                          :height 64}]]
+     [:div.media-body [:p.media-heading (:name item)]]]))
