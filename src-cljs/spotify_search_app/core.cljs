@@ -95,8 +95,6 @@
                :allowtransparency true}]
      ]]])
 
-<iframe src="https://embed.spotify.com/?uri=spotify:track:4th1RQAelzqgY7wL53UGQt" width="300" height="80" frameborder="0" allowtransparency="true"></iframe>
-
 (defn artist []
   [:div.container
    [:div.jumbotron
