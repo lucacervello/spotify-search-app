@@ -18,3 +18,6 @@
 
 (defn get-artists [name-artist app-state]
   (get-info name-artist "artist" app-state))
+
+(defn get-tracks-and-artists [name app-state]
+  (get-info name "track,artist" app-state))

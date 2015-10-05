@@ -8,7 +8,10 @@
   (let [value (-> this .-target .-value)]
     (if (zero? (count value))
       (reset! app-state nil)
-      (api/get-artists value app-state))))
+      (api/get-tracks-and-artists value app-state))))
+
+(def default-icon-url
+  "http://icons.iconarchive.com/icons/artcore-illustrations/artcore-4/512/spotify-icon.png")
 
 ;; -------------------------
 ;; Components
@@ -21,19 +24,32 @@
                           :on-change #(search-value % app-state)}]]])
 
 (defn list [app-state]
-  [:ul.list-group
-   (for [item (:items (:artists @app-state))]
-     ^{:keys (:id item)} [:a.list-group-item {:href (str "#/artist/" (:id item))}
-                                        ;(:name item)
-                                        ;[:img {:src (-> item :images first :url)}]
-                                        ;[:span.badge (:popularity item)]
-                          [card item]
-                          ])])
+  [:div
+   (when-let [artist-items (seq (-> @app-state :artists :items))]
+     [:div.col-md-6
+      [:div.panel.panel-default
+       [:div.panel-heading "Artists"]
+       [:ul.list-group
+        (for [item artist-items]
+          ^{:keys (:id item)}
+          [:a.list-group-item
+           {:href (str "#/artist/" (:id item))}
+           [card item]])]]])
+   (when-let [track-items (seq (-> @app-state :tracks :items))]
+     [:div.col-md-6
+      [:div.panel.panel-default
+       [:div.panel-heading "Tracks"]
+       [:ul.list-group
+        (for [item track-items]
+          ^{:keys (:id item)}
+          [:a.list-group-item
+           {:href (str "#/track/" (:id item))}
+           [card item]])]]])])
 
 (defn card [item]
   (let [img-url (if (seq (:images item))
               (-> item :images first :url)
-              "http://icons.iconarchive.com/icons/artcore-illustrations/artcore-4/512/spotify-icon.png")]
+              default-icon-url)]
     [:div.media
      [:div.media-left
       [:img.media-object {:src img-url
