@@ -61,6 +61,8 @@
               {:__html (md->html docs)}}]]])])
 
 (def app-state (atom nil))
+(def track-state (atom nil))
+(def artist-state (atom nil))
 
 (defn app []
   [:div.container
@@ -78,10 +80,35 @@
      [comp/list app-state]]
     [:div.col-md-3]]])
 
+(defn track []
+  [:div.container
+   [:div.jumbotron
+    [:div.container
+     [:h1 (:name @track-state)]
+     (for [artist (:artists @track-state)]
+       [:h4 (:name artist)])
+     [:iframe {:src (str "https://embed.spotify.com/?uri=spotify:track:"
+                         (:id @track-state))
+               :width 300
+               :height 80
+               :frameborder 0
+               :allowtransparency true}]
+     ]]])
+
+<iframe src="https://embed.spotify.com/?uri=spotify:track:4th1RQAelzqgY7wL53UGQt" width="300" height="80" frameborder="0" allowtransparency="true"></iframe>
+
+(defn artist []
+  [:div.container
+   [:div.jumbotron
+    [:div.container
+     [:h1 (:name @artist-state)]]]])
+
 (def pages
   {:home #'home-page
    :about #'about-page
-   :app #'app})
+   :app #'app
+   :track #'track
+   :artist #'artist})
 
 (defn page []
   [(pages (session/get :page))])
@@ -90,14 +117,26 @@
 ;; Routes
 (secretary/set-config! :prefix "#")
 
-(secretary/defroute "/" []
+(secretary/defroute "/home" []
   (session/put! :page :home))
 
 (secretary/defroute "/about" []
   (session/put! :page :about))
 
-(secretary/defroute "/app" []
+(secretary/defroute "/" []
   (session/put! :page :app))
+
+(secretary/defroute "/track/:id" [id]
+  (do
+    (reset! app-state nil)
+    (api/get-track id track-state)
+    (session/put! :page :track)))
+
+(secretary/defroute "/artist/:id" [id]
+  (do
+    (reset! app-state nil)
+    (api/get-artist id artist-state)
+    (session/put! :page :artist)))
 
 ;; -------------------------
 ;; History
