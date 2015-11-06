@@ -86,14 +86,11 @@
     [:div.container
      [:h1 (:name @track-state)]
      (for [artist (:artists @track-state)]
-       [:h4 (:name artist)])
+       [:h4 [:a {:href (str "#/artist/" (:id artist))} (:name artist)]])
      [:iframe {:src (str "https://embed.spotify.com/?uri=spotify:track:"
                          (:id @track-state))
-               :width 300
-               :height 80
-               :frameborder 0
-               :allowtransparency true}]
-     ]]])
+               :width 300 :height 80
+               :frameborder 0 :allowtransparency true}]]]])
 
 (defn artist []
   [:div.container

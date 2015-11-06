@@ -1,6 +1,6 @@
 # spotify-search-app
 
-FIXME
+Experimental app written in Clojure/Clojurescript.
 
 ## Prerequisites
 
